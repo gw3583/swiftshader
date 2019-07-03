@@ -30,6 +30,9 @@
 #include <cstring>
 #include <vector>
 #include <map>
+#if defined(USE_X11)
+#include "Main/libX11.hpp"
+#endif
 
 using namespace std;
 
@@ -68,7 +71,20 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
 		#if defined(__ANDROID__) && !defined(ANDROID_NDK_BUILD)
 			mNativeVisualID = HAL_PIXEL_FORMAT_BGRA_8888;
 		#else
-			mNativeVisualID = 2;   // Arbitrary; prefer over ABGR
+			// glutin calls eglGetConfigAttrib() to get the native visual
+			// ID for X11, but this is an arbitrary value in SwiftShader.
+			// This hack just retrieves the default visual ID for X11,
+			// and returns that. This makes rendering work - perhaps it
+			// is somehow slowing SwiftShader down by forcing some kind
+			// of conversion in formats to occur?
+			{
+				::Display *x_display = libX11->XOpenDisplay(NULL);
+				int x_screen = DefaultScreen(x_display);
+				Visual *x_visual = libX11->XDefaultVisual(x_display, x_screen);
+				VisualID vid = libX11->XVisualIDFromVisual(x_visual);
+				libX11->XCloseDisplay(x_display);
+				mNativeVisualID = vid;   // Arbitrary; prefer over ABGR
+			}
 		#endif
 		break;
 	case sw::FORMAT_A8B8G8R8:

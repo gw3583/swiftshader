@@ -30,6 +30,7 @@ LibX11exports::LibX11exports(void *libX11, void *libXext)
 	XDefaultDepth = (int (*)(Display*, int))getProcAddress(libX11, "XDefaultDepth");
 	XMatchVisualInfo = (Status (*)(Display*, int, int, int, XVisualInfo*))getProcAddress(libX11, "XMatchVisualInfo");
 	XDefaultVisual = (Visual *(*)(Display*, int screen_number))getProcAddress(libX11, "XDefaultVisual");
+	XVisualIDFromVisual = (VisualID (*)(Visual*))getProcAddress(libX11, "XVisualIDFromVisual");
 	XSetErrorHandler = (int (*(*)(int (*)(Display*, XErrorEvent*)))(Display*, XErrorEvent*))getProcAddress(libX11, "XSetErrorHandler");
 	XSync = (int (*)(Display*, Bool))getProcAddress(libX11, "XSync");
 	XCreateImage = (XImage *(*)(Display*, Visual*, unsigned int, int, int, char*, unsigned int, unsigned int, int, int))getProcAddress(libX11, "XCreateImage");

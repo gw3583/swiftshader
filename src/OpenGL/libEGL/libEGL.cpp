@@ -1283,10 +1283,14 @@ EGLDisplay GetPlatformDisplay(EGLenum platform, void *native_display, const EGLA
 				return error(EGL_BAD_PARAMETER, EGL_NO_DISPLAY);
 			}
 
-			if(native_display != (void*)EGL_DEFAULT_DISPLAY)
-			{
-				return error(EGL_BAD_PARAMETER, EGL_NO_DISPLAY);   // Unimplemented
-			}
+			// glutin passes a native display handle here, which causes this function
+			// to fail. Commenting out this check allows rendering to seemingly
+			// work fine. Does this have any performance implications that could
+			// be causing slowness?
+			// if(native_display != (void*)EGL_DEFAULT_DISPLAY)
+			// {
+			// 	return error(EGL_BAD_PARAMETER, EGL_NO_DISPLAY);   // Unimplemented
+			// }
 
 			if(attrib_list && attrib_list[0] != EGL_NONE)
 			{
